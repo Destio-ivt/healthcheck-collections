@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:5173" # Expose the Vite development server
+    environment:
+      - VITE_BACKEND_URL=http://127.0.0.1:2020
+    stdin_open: true # Keep STDIN open for hot reloading
+    tty: true # Allocate a pseudo-TTY for hot reloading
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "2020:2020" # Flask runs on this port
+    environment:
+      - FLASK_ENV=development
+    stdin_open: true
+    tty: true

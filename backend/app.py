@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 
 from services.collection_services import (
-    delete_cluster, delete_collection, delete_report, get_collection_by_id, 
+    delete_cluster, delete_collection, get_collection_by_id, 
     get_collections, get_cluster_by_id, get_report_by_id, get_reports
 )
 from services.file_services import upload_files
@@ -109,19 +109,6 @@ def get_all_reports_endpoint():
     try:
         data = get_reports()
         return jsonify({"data": data}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-# Delete a report
-@app.route('/api/v1/chartapp/report', methods=['DELETE'])
-def delete_report_endpoint():
-    collection_name = request.json.get('collection_name')
-    if not collection_name:
-        return jsonify({"error": "Missing 'collection_name'"}), 400
-    try:
-        delete_report(collection_name)
-        return jsonify({"msg": "Report deleted successfully"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

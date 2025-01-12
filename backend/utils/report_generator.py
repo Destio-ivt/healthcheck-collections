@@ -172,13 +172,19 @@ def evaluate_percentages(request_count, response_count, total_count):
 def evaluate_errors(collection_name, cluster_name, error_file):
     if not error_file:
         return "OK", ""
+
     error_data = load_json_summary(collection_name, cluster_name, error_file)
     if not error_data:
         return "Warning", f"Failed to retrieve data from {error_file}."
+
     total_errors = sum(item["Count"] for item in error_data)
     if total_errors > 10:
-        most_frequent_error = max(error_data, key=lambda x: x["Count"])["Errors"]
-        return "Warning", f"Most frequent error: '{most_frequent_error}'."
+        # Check if any "Errors" field in error_data is not null
+        non_null_errors = [item for item in error_data if item.get("Errors")]
+        if non_null_errors:
+            most_frequent_error = max(non_null_errors, key=lambda x: x["Count"])["Errors"]
+            return "Warning", f"Most frequent error: '{most_frequent_error}'."
+
     return "OK", ""
 
 
@@ -237,8 +243,8 @@ def extract_log_metadata(collection_name, cluster_name, server_name, log_file, i
 
 def generate_image_placeholders(data):
     return {
-        f"[chart_{j+1}]": chart
-        for j, chart in enumerate(data.get("charts", []))
+        f"[chart_{int(chart.split('_')[0])}]": chart
+        for chart in data.get("charts", [])
     }
 
 

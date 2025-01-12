@@ -1,7 +1,7 @@
 import os
 import shutil
 from flask import abort
-from utils.utils import BASE_DIR, REPORTS_DIR
+from utils.utils import BASE_DIR, REPORTS_DIR, TEMP_DIR
 
 def get_directory_contents(path, subdirs_only=False):
     if not os.path.exists(path):
@@ -70,14 +70,17 @@ def delete_directory(path):
     if os.path.exists(path):
         shutil.rmtree(path)
 
+def delete_file(path):
+    if os.path.exists(path):
+        os.remove(path)
+
 def delete_collection(collection_id):
     delete_directory(os.path.join(BASE_DIR, collection_id))
+    delete_directory(os.path.join(REPORTS_DIR, collection_id))
+    delete_file(os.path.join(TEMP_DIR, f"{collection_id}.zip"))
 
 def delete_cluster(collection_id, cluster_id):
     delete_directory(os.path.join(BASE_DIR, collection_id, cluster_id))
-
-def delete_report(collection_name):
-    delete_directory(os.path.join(REPORTS_DIR, collection_name))
 
 def get_reports():
     return [

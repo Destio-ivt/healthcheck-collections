@@ -102,13 +102,7 @@ const MainPage = () => {
           "Delete-Collection": "true",
         },
       });
-      await axios.delete(`${API_BASE_URL}/report`, {
-        data: { collection_name: selectedCollection?.collection_name },
-        headers: {
-          "Content-Type": "application/json",
-          "Delete-Collection": "true",
-        },
-      });
+
       showToast("success", "Collection deleted successfully.");
       fetchCollections();
       setShowDeleteModal(false);
